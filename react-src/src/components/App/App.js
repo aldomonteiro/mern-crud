@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
-import { Container } from 'semantic-ui-react';
+import { Container, Grid, GridRow } from 'semantic-ui-react';
 import axios from 'axios';
 import io from 'socket.io-client';
 
 import TableUser from '../TableUser/TableUser';
 import ModalUser from '../ModalUser/ModalUser';
+import SearchUser from '../SearchUser/SearchUser';
 
 import logo from '../../logo.svg';
 import shirts from '../../shirts.png';
@@ -27,6 +28,7 @@ class App extends Component {
     this.handleUserAdded = this.handleUserAdded.bind(this);
     this.handleUserUpdated = this.handleUserUpdated.bind(this);
     this.handleUserDeleted = this.handleUserDeleted.bind(this);
+    this.handleSearch = this.handleSearch.bind(this);
   }
 
   // Place socket.io code inside here
@@ -76,6 +78,12 @@ class App extends Component {
     this.setState({ users: users });
   }
 
+  handleSearch(e) {
+    let filteredUsers = this.state.users.slice();
+    filteredUsers = filteredUsers.filter(u => { return u.name.toLowerCase().search(e.target.value.toLowerCase()) != -1; });
+    this.setState({ users: filteredUsers });
+  }
+
   render() {
 
     let online = this.state.online;
@@ -100,16 +108,27 @@ class App extends Component {
           </div>
         </div>
         <Container>
-          <ModalUser
-            headerTitle='Add User'
-            buttonTriggerTitle='Add New'
-            buttonSubmitTitle='Add'
-            buttonColor='green'
-            onUserAdded={this.handleUserAdded}
-            server={this.server}
-            socket={this.socket}
-          />
-          <em id='online'>{`${online} ${noun} ${verb} online.`}</em>
+          <Grid columns={3}>
+            <Grid.Row>
+              <Grid.Column>
+                <SearchUser onChange={this.handleSearch} />
+              </Grid.Column>
+              <Grid.Column>
+              <em id='online'>{`${online} ${noun} ${verb} online.`}</em>
+              </Grid.Column>
+              <Grid.Column>
+              <ModalUser
+                  headerTitle='Add User'
+                  buttonTriggerTitle='Add New'
+                  buttonSubmitTitle='Add'
+                  buttonColor='green'
+                  onUserAdded={this.handleUserAdded}
+                  server={this.server}
+                  socket={this.socket}
+                />
+              </Grid.Column>
+            </Grid.Row>
+          </Grid>
           <TableUser
             onUserUpdated={this.handleUserUpdated}
             onUserDeleted={this.handleUserDeleted}
