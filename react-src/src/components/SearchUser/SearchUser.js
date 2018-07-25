@@ -8,18 +8,18 @@ class SearchUser extends Component {
   // }
 
   handleSearch(e) {
-    this.props.onChange(e);
+    this.props.onKeyDown(e);
   }
 
   render() {
     return (
       <Form>
-        <Form.Input
-          type='text'
-          placeholder='Search'
+        <input type='text'
+          placeholder='Enter the search condition and press Enter'
           name='name'
-          maxLength='40'
-          onChange={this.handleSearch.bind(this)} />
+          maxLength='40' 
+          onKeyDown={this.handleSearch.bind(this)}
+          />
        </Form>);
   }
 }

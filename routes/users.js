@@ -39,6 +39,18 @@ router.get('/', (req, res) => {
     });
 });
 
+// READ (ONE)
+router.get('/byname/:id', (req, res) => {
+  User.find({name:new RegExp("^"+ req.params.id)})
+    .then((result) => {
+      res.json(result);
+    })
+    .catch((err) => {
+      res.status(404).json({ success: false, msg: `No such user.` });
+    });
+});
+
+
 // CREATE
 router.post('/', postLimiter, (req, res) => {
 

@@ -79,9 +79,22 @@ class App extends Component {
   }
 
   handleSearch(e) {
-    let filteredUsers = this.state.users.slice();
-    filteredUsers = filteredUsers.filter(u => { return u.name.toLowerCase().search(e.target.value.toLowerCase()) != -1; });
-    this.setState({ users: filteredUsers });
+    // Search when press enter (13)
+    if (e.keyCode == 13) {
+      // Search only when there is something in the string
+      if (e.target.value)
+      {
+        axios.get(`${this.server}/api/users/byname/${e.target.value}`)
+        .then((response) => {
+          this.setState({ users: response.data });
+        }).catch((err) => {
+          console.log(err);
+        });
+      }
+      else { // search field is empty, fetch all users.
+          this.fetchUsers();
+      }    
+    }
   }
 
   render() {
@@ -111,7 +124,7 @@ class App extends Component {
           <Grid columns={3}>
             <Grid.Row>
               <Grid.Column>
-                <SearchUser onChange={this.handleSearch} />
+                <SearchUser onKeyDown={this.handleSearch} />
               </Grid.Column>
               <Grid.Column>
               <em id='online'>{`${online} ${noun} ${verb} online.`}</em>
